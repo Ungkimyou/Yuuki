@@ -1,10 +1,14 @@
-const Discord = require('discord.js');
+const malScraper = require('mal-scraper');
 
-module.exports = (res, page, max, message) => {
-    return new Discord.MessageEmbed()
-    .setColor(message.client.embedColor)
-    .setThumbnail(res[page - 1].image)
-    .setTitle(res[page - 1].title)
-    .setDescription(`${res[page - 1].link}\n\`${res[page - 1].text}\``)
-    .setFooter(`Page ${page}/${max}`);
+module.exports = async (client) => {
+    const res = await malScraper.getNewsNoDetails(20);
+
+    let pages = [];
+    res.forEach(e =>{
+        pages.push(client.embedBuilder().setThumbnail(e.image)
+        .setTitle(e.title)
+        .setDescription(`${e.link}\n\`${e.text}\``));
+    });
+
+    return pages;
 }
